@@ -8,6 +8,8 @@ namespace apCaminhos
     {
         ListaDupla<Cidade> cidades;
         ListaDupla<Caminho> caminhos;
+        Cidade origem;
+        Cidade destino;
 
         public FormCaminhos()
         {
@@ -23,11 +25,11 @@ namespace apCaminhos
                     (item as ToolStripButton).ImageIndex = indice++;
 
 
-            if (dlgAbrirCidades.ShowDialog() == DialogResult.OK) // se o arquivo de cidades foi aberto
+            if (cidadesOpenFileDialog.ShowDialog() == DialogResult.OK) // se o arquivo de cidades foi aberto
             {
                 cidades = new ListaDupla<Cidade>(); // instancia uma lista dupla de cidades
 
-                cidades.LerDados(dlgAbrirCidades.FileName); // lê os dados do arquivo aberto
+                cidades.LerDados(cidadesOpenFileDialog.FileName); // lê os dados do arquivo aberto
 
                 // limpa os combo boxes
                 origemComboBox.Items.Clear();
@@ -48,11 +50,11 @@ namespace apCaminhos
                 origemComboBox.Text = destinoComboBox.Text = "Selecione";
             }
 
-            if (dlgAbrirCaminhos.ShowDialog() == DialogResult.OK) // se o arquivo de caminhos foi aberto
+            if (caminhosOpenFileDialog.ShowDialog() == DialogResult.OK) // se o arquivo de caminhos foi aberto
             {
                 caminhos = new ListaDupla<Caminho>(); // instancia uma lista dupla de cidades
 
-                caminhos.LerDados(dlgAbrirCaminhos.FileName); // lê os dados do arquivo aberto
+                caminhos.LerDados(caminhosOpenFileDialog.FileName); // lê os dados do arquivo aberto
             }
         }
 
@@ -81,6 +83,43 @@ namespace apCaminhos
 
                     cidades.AvancarPosicao(); // avança o atual
                 }
+            }
+        }
+
+        private void FormCaminhos_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (caminhos != null && caminhosOpenFileDialog.FileName != "") // se lista não foi null e um arquivo foi aberto
+            {
+                caminhos.Ordenar(); // a lista é ordenada
+                caminhos.GravarDados(caminhosOpenFileDialog.FileName); // e depois tem seus dados gravados
+            }
+        }
+
+        // TODO: critério de separação: como procurar por id e por nome?
+
+        private void origemComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // instancia uma cidade com o texto do elemento selecionado
+            Cidade cidadeSelecionada = new Cidade("".PadLeft(3, '0'), origemComboBox.Text, 0, 0);
+
+            // se a cidade existe
+            if (cidades.Existe(cidadeSelecionada, out _))
+            {
+                // a cidade de origem recebe o dado atual
+                origem = cidades.DadoAtual();
+            }
+        }
+
+        private void destinoComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // instancia uma cidade com o texto do elemento selecionado
+            Cidade cidadeSelecionada = new Cidade("".PadLeft(3, '0'), destinoComboBox.Text, 0, 0);
+
+            // se a cidade existe
+            if (cidades.Existe(cidadeSelecionada, out _))
+            {
+                // a cidade de destino recebe o dado atual
+                destino = cidades.DadoAtual();
             }
         }
     }

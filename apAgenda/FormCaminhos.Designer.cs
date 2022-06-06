@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormCaminhos));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.mesagemStatusStripLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.imlBotoes = new System.Windows.Forms.ImageList(this.components);
@@ -50,7 +50,7 @@
             this.excluirToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.sairToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.dlgAbrirCidades = new System.Windows.Forms.OpenFileDialog();
+            this.cidadesOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.mapaPictureBox = new System.Windows.Forms.PictureBox();
             this.caminhosEncontradosLabel = new System.Windows.Forms.Label();
             this.melhorCaminhoLabel = new System.Windows.Forms.Label();
@@ -78,7 +78,7 @@
             this.destinoComboBox = new System.Windows.Forms.ComboBox();
             this.origemComboBox = new System.Windows.Forms.ComboBox();
             this.kmCaminhoSelecionadoLabel = new System.Windows.Forms.Label();
-            this.dlgAbrirCaminhos = new System.Windows.Forms.OpenFileDialog();
+            this.caminhosOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.statusStrip.SuspendLayout();
             this.Caminhos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mapaPictureBox)).BeginInit();
@@ -263,10 +263,10 @@
             this.sairToolStripButton.Text = "Sair";
             this.sairToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
-            // dlgAbrirCidades
+            // cidadesOpenFileDialog
             // 
-            this.dlgAbrirCidades.DefaultExt = "*.txt";
-            this.dlgAbrirCidades.InitialDirectory = "c:\\temp";
+            this.cidadesOpenFileDialog.DefaultExt = "*.txt";
+            this.cidadesOpenFileDialog.InitialDirectory = "c:\\temp";
             // 
             // mapaPictureBox
             // 
@@ -384,8 +384,8 @@
             // Column1
             // 
             this.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column1.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column1.DefaultCellStyle = dataGridViewCellStyle3;
             this.Column1.HeaderText = "Passando por";
             this.Column1.Name = "Column1";
             this.Column1.Width = 132;
@@ -477,6 +477,7 @@
             this.destinoComboBox.Name = "destinoComboBox";
             this.destinoComboBox.Size = new System.Drawing.Size(150, 28);
             this.destinoComboBox.TabIndex = 36;
+            this.destinoComboBox.SelectedIndexChanged += new System.EventHandler(this.destinoComboBox_SelectedIndexChanged);
             // 
             // origemComboBox
             // 
@@ -487,6 +488,7 @@
             this.origemComboBox.Name = "origemComboBox";
             this.origemComboBox.Size = new System.Drawing.Size(150, 28);
             this.origemComboBox.TabIndex = 35;
+            this.origemComboBox.SelectedIndexChanged += new System.EventHandler(this.origemComboBox_SelectedIndexChanged);
             // 
             // kmCaminhoSelecionadoLabel
             // 
@@ -498,10 +500,10 @@
             this.kmCaminhoSelecionadoLabel.TabIndex = 48;
             this.kmCaminhoSelecionadoLabel.Text = "Km do caminho selecionado: (xxxxx km)";
             // 
-            // dlgAbrirCaminhos
+            // caminhosOpenFileDialog
             // 
-            this.dlgAbrirCaminhos.DefaultExt = "*.txt";
-            this.dlgAbrirCaminhos.InitialDirectory = "c:\\temp";
+            this.caminhosOpenFileDialog.DefaultExt = "*.txt";
+            this.caminhosOpenFileDialog.InitialDirectory = "c:\\temp";
             // 
             // FormCaminhos
             // 
@@ -531,6 +533,7 @@
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "FormCaminhos";
             this.Text = "Ligações e caminhos entre Cidades";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormCaminhos_FormClosing);
             this.Load += new System.EventHandler(this.FrmAgenda_Load);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
@@ -566,7 +569,7 @@
         private System.Windows.Forms.ToolStripButton excluirToolStripButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripButton sairToolStripButton;
-        private System.Windows.Forms.OpenFileDialog dlgAbrirCidades;
+        private System.Windows.Forms.OpenFileDialog cidadesOpenFileDialog;
         private System.Windows.Forms.ToolStripStatusLabel mesagemStatusStripLabel;
         private System.Windows.Forms.PictureBox mapaPictureBox;
         private System.Windows.Forms.Label melhorCaminhoLabel;
@@ -595,7 +598,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column9;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column10;
-        private System.Windows.Forms.OpenFileDialog dlgAbrirCaminhos;
+        private System.Windows.Forms.OpenFileDialog caminhosOpenFileDialog;
     }
 }
 
