@@ -24,9 +24,27 @@ namespace apMarsRoads
 
             if (dlgAbrirCidades.ShowDialog() == DialogResult.OK) // se o arquivo de cidades foi aberto
             {
-                cidades = new ListaDupla<Cidade>();
+                cidades = new ListaDupla<Cidade>(); // instancia uma lista dupla de cidades
 
-                cidades.LerDados(dlgAbrirCidades.FileName);
+                cidades.LerDados(dlgAbrirCidades.FileName); // lê os dados do arquivo aberto
+
+                // limpa os combo boxes
+                origemComboBox.Items.Clear();
+                destinoComboBox.Items.Clear();
+
+                cidades.PosicionarNoPrimeiro(); // posiciona no primeiro
+
+                while (cidades.DadoAtual() != null) // enquanto atual for diferente de null
+                {
+                    // adiciona o dado atual no combo box
+                    origemComboBox.Items.Add(cidades.DadoAtual().Nome);
+                    destinoComboBox.Items.Add(cidades.DadoAtual().Nome);
+
+                    cidades.AvancarPosicao(); // avança o atual
+                }
+
+                // define o texto dos combo boxes
+                origemComboBox.Text = destinoComboBox.Text = "Selecione";
             }
         }
 
