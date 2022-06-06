@@ -2,11 +2,12 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace apMarsRoads
+namespace apCaminhos
 {
     public partial class FormCaminhos : Form
     {
         ListaDupla<Cidade> cidades;
+        ListaDupla<Caminho> caminhos;
 
         public FormCaminhos()
         {
@@ -45,6 +46,13 @@ namespace apMarsRoads
 
                 // define o texto dos combo boxes
                 origemComboBox.Text = destinoComboBox.Text = "Selecione";
+            }
+
+            if (dlgAbrirCaminhos.ShowDialog() == DialogResult.OK) // se o arquivo de caminhos foi aberto
+            {
+                caminhos = new ListaDupla<Caminho>(); // instancia uma lista dupla de cidades
+
+                caminhos.LerDados(dlgAbrirCaminhos.FileName); // lê os dados do arquivo aberto
             }
         }
 

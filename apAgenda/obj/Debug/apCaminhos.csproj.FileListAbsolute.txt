@@ -19,4 +19,4 @@ C:\Users\u21687\www\cotuca.unicamp.br\semesters\third\ds\mars-roads\apAgenda\obj
 C:\Users\u21687\www\cotuca.unicamp.br\semesters\third\ds\mars-roads\apAgenda\obj\Debug\apCaminhos.csproj.CoreCompileInputs.cache
 C:\Users\u21687\www\cotuca.unicamp.br\semesters\third\ds\mars-roads\apAgenda\obj\Debug\apMarsRoads.exe
 C:\Users\u21687\www\cotuca.unicamp.br\semesters\third\ds\mars-roads\apAgenda\obj\Debug\apMarsRoads.pdb
-C:\Users\u21687\www\cotuca.unicamp.br\semesters\third\ds\mars-roads\apAgenda\obj\Debug\apMarsRoads.FormCaminhos.resources
+C:\Users\u21687\www\cotuca.unicamp.br\semesters\third\ds\mars-roads\apAgenda\obj\Debug\apCaminhos.FormCaminhos.resources
