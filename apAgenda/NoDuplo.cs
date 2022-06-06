@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Gabriel Willian Bartmanovicz - 21234
+// João Pedro Ferreira Barbosa - 21687
+
+using System;
 
 class NoDuplo<Dado>
     where Dado : IComparable<Dado>,
@@ -16,5 +19,5 @@ class NoDuplo<Dado>
 
     public NoDuplo<Dado> Ant { get => ant; set => ant = value; }
     public Dado Info { get => info; set => info = value; }
-    public NoDuplo<Dado> Prox { get => prox; set => prox = value; }
+    public NoDuplo<Dado> Prox { get => prox; set => prox = value;}
 }

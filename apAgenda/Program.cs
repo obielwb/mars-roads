@@ -16,7 +16,7 @@ namespace apMarsRoads
     {
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
-      Application.Run(new FrmCaminhos());
+      Application.Run(new FormCaminhos());
     }
   }
 }
