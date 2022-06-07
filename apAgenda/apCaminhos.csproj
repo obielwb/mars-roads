@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Caminho.cs" />
+    <Compile Include="Ligacao.cs" />
     <Compile Include="Cidade.cs" />
     <Compile Include="FormCaminhos.cs">
       <SubType>Form</SubType>
@@ -56,7 +56,6 @@
     </Compile>
     <Compile Include="IDados.cs" />
     <Compile Include="IRegistro.cs" />
-    <Compile Include="Ligacao.cs" />
     <Compile Include="ListaDupla.cs" />
     <Compile Include="NoDuplo.cs" />
     <Compile Include="Program.cs" />

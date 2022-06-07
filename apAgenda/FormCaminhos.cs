@@ -7,7 +7,8 @@ namespace apCaminhos
     public partial class FormCaminhos : Form
     {
         ListaDupla<Cidade> cidades;
-        ListaDupla<Caminho> caminhos;
+        ListaDupla<Ligacao> ligacoes
+            ;
         Cidade origem;
         Cidade destino;
 
@@ -52,9 +53,9 @@ namespace apCaminhos
 
             if (caminhosOpenFileDialog.ShowDialog() == DialogResult.OK) // se o arquivo de caminhos foi aberto
             {
-                caminhos = new ListaDupla<Caminho>(); // instancia uma lista dupla de cidades
+                ligacoes = new ListaDupla<Ligacao>(); // instancia uma lista dupla de cidades
 
-                caminhos.LerDados(caminhosOpenFileDialog.FileName); // lê os dados do arquivo aberto
+                ligacoes.LerDados(caminhosOpenFileDialog.FileName); // lê os dados do arquivo aberto
             }
         }
 
@@ -88,10 +89,10 @@ namespace apCaminhos
 
         private void FormCaminhos_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (caminhos != null && caminhosOpenFileDialog.FileName != "") // se lista não foi null e um arquivo foi aberto
+            if (ligacoes != null && caminhosOpenFileDialog.FileName != "") // se lista não foi null e um arquivo foi aberto
             {
-                caminhos.Ordenar(); // a lista é ordenada
-                caminhos.GravarDados(caminhosOpenFileDialog.FileName); // e depois tem seus dados gravados
+                ligacoes.Ordenar(); // a lista é ordenada
+                ligacoes.GravarDados(caminhosOpenFileDialog.FileName); // e depois tem seus dados gravados
             }
         }
 
@@ -121,6 +122,29 @@ namespace apCaminhos
                 // a cidade de destino recebe o dado atual
                 destino = cidades.DadoAtual();
             }
+        }
+
+        private void acharCaminhosButton_Click(object sender, EventArgs e)
+        {
+            // instancia uma matriz de adjacências com tamanho das cidades
+            int[ , ] adjacencias = new int[cidades.Tamanho, cidades.Tamanho];
+
+            ligacoes.PosicionarNoPrimeiro(); // posiciona o atual no primeiro
+
+            while (ligacoes.DadoAtual() != null) // enquanto atual não for null
+            {
+                // obtém o dado atual e o atribui à ligação
+                Ligacao ligacao = ligacoes.DadoAtual();
+
+                // atribui ao elemento relativo aos códigos a distância
+                adjacencias[int.Parse(ligacao.CodigoOrigem), int.Parse(ligacao.CodigoDestino)] = ligacao.Distancia;
+
+                ligacoes.AvancarPosicao(); // avança o atual
+            }
+
+            // códigos de origem e destino
+            int codigoOrigem = int.Parse(origem.Codigo);
+            int codigoDestino = int.Parse(destino.Codigo);
         }
     }
 }

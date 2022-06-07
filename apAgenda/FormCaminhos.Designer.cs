@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormCaminhos));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.mesagemStatusStripLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.imlBotoes = new System.Windows.Forms.ImageList(this.components);
@@ -384,8 +384,8 @@
             // Column1
             // 
             this.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column1.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column1.DefaultCellStyle = dataGridViewCellStyle1;
             this.Column1.HeaderText = "Passando por";
             this.Column1.Name = "Column1";
             this.Column1.Width = 132;
@@ -398,6 +398,7 @@
             this.acharCaminhosButton.TabIndex = 45;
             this.acharCaminhosButton.Text = "Achar caminhos";
             this.acharCaminhosButton.UseVisualStyleBackColor = true;
+            this.acharCaminhosButton.Click += new System.EventHandler(this.acharCaminhosButton_Click);
             // 
             // custoNumericUpDown
             // 

@@ -39,7 +39,7 @@ class Cidade : IComparable<Cidade>, IRegistro<Cidade>
 
     public int CompareTo(Cidade outro)
     {
-        return codigo.ToUpperInvariant().CompareTo(outro.codigo.ToUpperInvariant());
+        return nome.ToUpperInvariant().CompareTo(outro.Nome.ToUpperInvariant());
     }
 
     public Cidade LerRegistro(StreamReader arquivo)
