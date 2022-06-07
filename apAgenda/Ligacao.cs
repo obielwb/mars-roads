@@ -87,7 +87,8 @@ namespace apCaminhos
         // método de string para arquivo
         public string ParaArquivo()
         {
-            return CodigoOrigem + codigoDestino + Distancia + Tempo + Custo;
+            return CodigoOrigem + codigoDestino + Distancia.ToString("00000") +
+                Tempo.ToString("0000") + Custo.ToString("00000");
         }
 
         // override do método to string

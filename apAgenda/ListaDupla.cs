@@ -9,8 +9,8 @@ class ListaDupla<Dado> : IDados<Dado>
                 where Dado : IComparable<Dado>, IRegistro<Dado>, new()
 {
     NoDuplo<Dado> primeiro, ultimo, atual;
-    int quantosNos;
-    private Situacao situacaoAtual;
+    int quantosNos, posicaoAtual;
+    Situacao situacaoAtual;
 
     public ListaDupla()
     {
@@ -18,20 +18,8 @@ class ListaDupla<Dado> : IDados<Dado>
         quantosNos = 0;
     }
 
-    // situação atual da lista
-    public Situacao SituacaoAtual { get => situacaoAtual; set => situacaoAtual = value; }
-    public int PosicaoAtual { // posição atual na lista
-        get
-        {
-            if (Existe(DadoAtual(), out int posicao)) // se o dado atual existe
-            {
-                return posicao; // o paramêtro out é retornado como sua posição
-            }
-
-            return -1; // senão, -1
-        }
-        set => PosicionarEm(value); // posiciona o atual na posição atribuída
-    }
+    public Situacao SituacaoAtual { get => situacaoAtual; set => situacaoAtual = value; } // situação atual da lista
+    public int PosicaoAtual { get => posicaoAtual; set => posicaoAtual = value; } // posiciona o atual na posição atribuída
     public bool EstaNoInicio { get => atual == primeiro; } // verifica se o atual está no início da lista
     public bool EstaNoFim { get => atual == ultimo; } // verifica se o atual está no fim da lista
     public bool EstaVazio { get => quantosNos == 0; } // verifica se a lista está vazia
@@ -78,6 +66,7 @@ class ListaDupla<Dado> : IDados<Dado>
     public void PosicionarNoPrimeiro() // posiciona o atual no primeiro nó
     {
         atual = primeiro; // o atual é posicionado no primeiro nó
+        posicaoAtual = 0;
     }
 
     public void RetrocederPosicao() // posiciona o atual em seu nó anterior  
@@ -85,6 +74,7 @@ class ListaDupla<Dado> : IDados<Dado>
         if (atual != null) // se atual for diferente de null
         {
             atual = atual.Ant; // o atual é posicionado no nó anterior
+            posicaoAtual--;
         }
     }
 
@@ -93,12 +83,14 @@ class ListaDupla<Dado> : IDados<Dado>
         if (atual != null) // se atual for diferente de null
         {
             atual = atual.Prox; // o atual é posicionado no próximo nó
+            posicaoAtual++;
         }
     }
 
     public void PosicionarNoUltimo() // posiciona o atual no último nó
     {
         atual = ultimo; // o atual é posicionado no último nó
+        posicaoAtual = Tamanho;
     }
 
     public void PosicionarEm(int posicaoDesejada) // posiciona o atual em uma posição específica da lista

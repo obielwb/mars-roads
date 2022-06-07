@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace apCaminhos
 {
     public partial class FormCaminhos : Form
     {
         ListaDupla<Cidade> cidades;
-        ListaDupla<Ligacao> ligacoes
-            ;
+        ListaDupla<Ligacao> ligacoes;
         Cidade origem;
         Cidade destino;
+        PilhaVetor<Movimento> movimentos;
 
         public FormCaminhos()
         {
@@ -126,25 +127,194 @@ namespace apCaminhos
 
         private void acharCaminhosButton_Click(object sender, EventArgs e)
         {
-            // instancia uma matriz de adjacências com tamanho das cidades
-            int[ , ] adjacencias = new int[cidades.Tamanho, cidades.Tamanho];
-
-            ligacoes.PosicionarNoPrimeiro(); // posiciona o atual no primeiro
-
-            while (ligacoes.DadoAtual() != null) // enquanto atual não for null
+            // se a cidade de origem e a cidade de destino não forem null
+            if (origem != null && destino != null)
             {
-                // obtém o dado atual e o atribui à ligação
-                Ligacao ligacao = ligacoes.DadoAtual();
+                //////////////////////////////////   atributos   //////////////////////////////////
+                ///
+                // instancia uma matriz de adjacências com tamanho das cidades
+                int[,] adjacencias = new int[cidades.Tamanho, cidades.Tamanho];
 
-                // atribui ao elemento relativo aos códigos a distância
-                adjacencias[int.Parse(ligacao.CodigoOrigem), int.Parse(ligacao.CodigoDestino)] = ligacao.Distancia;
+                ligacoes.PosicionarNoPrimeiro(); // posiciona o atual no primeiro
 
-                ligacoes.AvancarPosicao(); // avança o atual
+                while (ligacoes.DadoAtual() != null) // enquanto atual não for null
+                {
+                    // obtém o dado atual e o atribui à ligação
+                    Ligacao ligacao = ligacoes.DadoAtual();
+
+                    // atribui ao elemento relativo aos códigos a distância
+                    adjacencias[int.Parse(ligacao.CodigoOrigem), int.Parse(ligacao.CodigoDestino)] = ligacao.Distancia;
+
+                    ligacoes.AvancarPosicao(); // avança o atual
+                }
+
+                // códigos de origem e destino
+                int codigoOrigem = int.Parse(origem.Codigo);
+                int codigoDestino = int.Parse(destino.Codigo);
+
+                // vetor lógica para registrar a passagem por uma cidade
+                bool[] passou = new bool[cidades.Tamanho];
+
+                // list que agrega os caminhos
+                List<PilhaVetor<Movimento>> caminhos = new List<PilhaVetor<Movimento>>();
+
+                // for que percorre o vetor de cidades visitadas
+                for (int i = 0; i < passou.Length; i++)
+                {
+                    // e o preenche com false
+                    passou[i] = false;
+                }
+
+                // pilha vetor de movimentos
+                movimentos = new PilhaVetor<Movimento>(cidades.Tamanho);
+
+                // variáveis para o registro da cidade e registro
+                int cidadeAtual = codigoOrigem, saidaAtual = 0;
+
+                // variáveis lógicas para o controle da busca
+                bool achou = false, fim = false;
+
+                //////////////////////////////////   busca   //////////////////////////////////
+                ///
+                // enquanto o caminho não foi encontrado e há saída
+                while (!achou && !fim)
+                {
+                    // não há saída se a cidade atual é a cidade de origem
+                    fim = cidadeAtual == codigoOrigem &&
+                        saidaAtual == cidades.Tamanho && // se a cidade atual é a última cidade
+                            movimentos.EstaVazia; // e a pilha de movimentos está vazia
+
+                    // se há saída
+                    if (!fim)
+                    {
+                        // enquanto a cidade atual não for a última cidade e o caminho não foi encontrado
+                        while ((saidaAtual < cidades.Tamanho) && !achou)
+                        {
+                            // se não há saída
+                            if (adjacencias[cidadeAtual, saidaAtual] == 0)
+                            {
+                                // tenta a próxima
+                                saidaAtual++;
+                            }
+
+                            else // se há saída
+                            {
+                                // se a saída já foi visitada
+                                if (passou[saidaAtual])
+                                {
+                                    // tenta a próxima
+                                    saidaAtual++;
+                                }
+
+                                else // se a saída não foi visitada
+                                {
+                                    // o movimento é empilhado
+                                    Movimento movimento = new Movimento(cidadeAtual, saidaAtual);
+                                    movimentos.Empilhar(movimento);
+
+                                    // se a saída for o destino
+                                    if (saidaAtual == codigoDestino)
+                                    {
+                                        achou = true; // achou recebe true
+                                    }
+
+                                    else // se a saída não for o destino
+                                    {
+                                        // marca que a cidade já foi passada
+                                        passou[cidadeAtual] = true;
+
+                                        // a cidade atual recebe a saída
+                                        cidadeAtual = saidaAtual;
+                                        // a saída recebe zero
+                                        saidaAtual = 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // se um caminho não foi encontrado e a pilha de movimentos não está vazia
+                    if (!achou && !movimentos.EstaVazia)
+                    {
+                        // desempilha o movimento anterior da pilha
+                        Movimento movimentoAnterior = movimentos.Desempilhar();
+
+                        // a cidade atual recebe a cidade de origem do movimento anterior
+                        cidadeAtual = movimentoAnterior.Origem;
+                        // a saída atual recebe a próxima cidade relativa ao movimento anterior
+                        saidaAtual = movimentoAnterior.Destino + 1;
+                    }
+                }
+
+                // instancia uma pilha de movimentos relativa ao caminho
+                PilhaVetor<Movimento> caminho = new PilhaVetor<Movimento>(movimentos.Tamanho);
+
+                // se um caminho foi encontrado
+                if (achou)
+                {
+                    // enquanto a pilha de movimentos não está vazia
+                    while (!movimentos.EstaVazia)
+                    {
+                        // desempilha o último movimento e empilha no caminho
+                        caminho.Empilhar(movimentos.Desempilhar());
+                    }
+
+                    // adiciona o caminho a list de caminhos
+                    caminhos.Add(caminho);
+                }
+
+                // exibe cada caminho no data grid view
+                for (int i = 0; i < caminhos.Count; i++)
+                {
+                    int celula = 0;
+
+                    foreach (Movimento movimento in caminhos[i].DadosDaPilha())
+                    {
+                        Cidade cidade = BuscarCidadePorCodigo(movimento.Origem);
+
+                        caminhosEncontradosDataGridView.Rows[i].Cells[celula++].Value = cidade.Nome;
+                    }
+                }
             }
 
-            // códigos de origem e destino
-            int codigoOrigem = int.Parse(origem.Codigo);
-            int codigoDestino = int.Parse(destino.Codigo);
+            else // se não
+            {
+                // exibe uma message box de erro
+                MessageBox.Show(
+                    "Selecione uma cidade de origem e uma cidade de destino!",
+                    "Erro",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
+        }
+
+        private Cidade BuscarCidadePorCodigo(int codigo)
+        {
+            cidades.PosicionarNoPrimeiro(); // posiciona o atual no primeiro
+
+            // variável de controle da busca
+            bool achou = false;
+
+            Cidade cidade = default;
+
+            // enquanto a cidade ainda não foi encontrada
+            while (!achou)
+            {
+                cidade = cidades.DadoAtual();
+
+                if (int.Parse(cidade.Codigo) == codigo)
+                {
+                    achou = true;
+                }
+
+                else
+                {
+                    cidades.AvancarPosicao();
+                }
+            }
+
+            return cidade;
         }
     }
 }

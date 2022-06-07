@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IStack.cs" />
     <Compile Include="Ligacao.cs" />
     <Compile Include="Cidade.cs" />
     <Compile Include="FormCaminhos.cs">
@@ -57,7 +58,9 @@
     <Compile Include="IDados.cs" />
     <Compile Include="IRegistro.cs" />
     <Compile Include="ListaDupla.cs" />
+    <Compile Include="Movimento.cs" />
     <Compile Include="NoDuplo.cs" />
+    <Compile Include="PilhaVetor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FormCaminhos.resx">
