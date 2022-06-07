@@ -125,6 +125,11 @@ namespace apCaminhos
             }
         }
 
+        //public bool IniciarBusca()
+        //{
+
+        //}
+
         private void acharCaminhosButton_Click(object sender, EventArgs e)
         {
             // se a cidade de origem e a cidade de destino não forem null
@@ -255,12 +260,45 @@ namespace apCaminhos
                     // enquanto a pilha de movimentos não está vazia
                     while (!movimentos.EstaVazia)
                     {
+                        ///////// inicia o processo de achar vários caminhos ////////
+                        // Pilha que armazena os destinos disponiveis para realizar a operação de backtracking da cidade atual
+                        bool[] destinosDisponiveis = new bool[cidades.Tamanho];
+
+                        for (int i = 0; i < destinosDisponiveis.Length; i++)
+                            destinosDisponiveis[i] = false; // inicializa todas as posições como false
+                        
+                        var movimentoDesempilhado = movimentos.Desempilhar();
+
+                        Cidade cidadeOrigemDoMovimento = BuscarCidadePorCodigo(movimentoDesempilhado.Origem);
+
+                        // percorre as saidas possíveis da cidade de origem
+                        saidaAtual = 0;
+                        cidadeAtual = int.Parse(cidadeOrigemDoMovimento.Codigo);
+                        while (saidaAtual < cidades.Tamanho)
+                        {
+                            if (adjacencias[cidadeAtual, saidaAtual] != 0)
+                            {
+                                // armazena as saidas da cidade atual no vetor de destinos possíveis
+                                destinosDisponiveis[saidaAtual] = true;
+                            }
+                        }
+
+                        /// Passos (só para o perído de desenvolvimento, apagar depois)
+
+                        /// - realizar algoritmo para verificar se tem caminho até a cidade desejada
+
+                        // TODO: realizar aqui a operação de procurar o caminho com o algoritmo 
+                        /// - se achar um caminho, adicionar numa lista de todos os caminhos possíveis
+                        /// - percorrer a lista e armazenar o caminho mais curto
+
                         // desempilha o último movimento e empilha no caminho
-                        caminho.Empilhar(movimentos.Desempilhar());
+                        caminho.Empilhar(movimentoDesempilhado);
                     }
 
                     // adiciona o caminho a list de caminhos
                     caminhos.Add(caminho);
+
+
                 }
 
                 // exibe cada caminho no data grid view
