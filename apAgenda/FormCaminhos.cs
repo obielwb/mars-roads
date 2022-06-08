@@ -31,6 +31,7 @@ namespace apCaminhos
             {
                 cidades = new ListaDupla<Cidade>(); // instancia uma lista dupla de cidades
 
+
                 cidades.LerDados(cidadesOpenFileDialog.FileName); // lê os dados do arquivo aberto
 
                 // limpa os combo boxes
@@ -251,8 +252,7 @@ namespace apCaminhos
                     }
                 }
 
-                // instancia uma pilha de movimentos relativa ao caminho
-                PilhaVetor<Movimento> caminho = new PilhaVetor<Movimento>(movimentos.Tamanho);
+               
 
                 // se um caminho foi encontrado
                 if (achou)
@@ -266,7 +266,7 @@ namespace apCaminhos
 
                         for (int i = 0; i < destinosDisponiveis.Length; i++)
                             destinosDisponiveis[i] = false; // inicializa todas as posições como false
-                        
+
                         var movimentoDesempilhado = movimentos.Desempilhar();
 
                         Cidade cidadeOrigemDoMovimento = BuscarCidadePorCodigo(movimentoDesempilhado.Origem);
@@ -283,22 +283,116 @@ namespace apCaminhos
                             }
                         }
 
-                        /// Passos (só para o perído de desenvolvimento, apagar depois)
 
-                        /// - realizar algoritmo para verificar se tem caminho até a cidade desejada
+                        for (int i = 0; i < destinosDisponiveis.Length; i++)
+                        {
+                            // Verifica se há uma conexão com outra cidade
+                            if (destinosDisponiveis[i])
+                            {
+                                // instancia uma pilha de movimentos relativa ao caminho
+                                PilhaVetor<Movimento> caminho = new PilhaVetor<Movimento>(movimentos.Tamanho);
 
-                        // TODO: realizar aqui a operação de procurar o caminho com o algoritmo 
-                        /// - se achar um caminho, adicionar numa lista de todos os caminhos possíveis
-                        /// - percorrer a lista e armazenar o caminho mais curto
+                                codigoOrigem = i;
+                                codigoDestino = int.Parse(destino.Codigo);
 
-                        // desempilha o último movimento e empilha no caminho
-                        caminho.Empilhar(movimentoDesempilhado);
+
+                                // instancia uma nova pilha de movimentos para o caminho atual
+                                PilhaVetor<Movimento> movimentosNovoCaminho = new PilhaVetor<Movimento>(cidades.Tamanho);
+
+                                // variáveis para o registro da cidade e registro
+                                cidadeAtual = codigoOrigem;
+                                saidaAtual = 0;
+
+                                // variáveis lógicas para o controle da busca
+                                achou = false;
+                                fim = false;
+
+                                while (!achou && !fim)
+                                {
+                                    // não há saída se a cidade atual é a cidade de origem
+                                    fim = cidadeAtual == codigoOrigem &&
+                                        saidaAtual == cidades.Tamanho && // se a cidade atual é a última cidade
+                                            movimentosNovoCaminho.EstaVazia; // e a pilha de movimentos está vazia
+
+                                    // se há saída
+                                    if (!fim)
+                                    {
+                                        // enquanto a cidade atual não for a última cidade e o caminho não foi encontrado
+                                        while ((saidaAtual < cidades.Tamanho) && !achou)
+                                        {
+                                            // se não há saída
+                                            if (adjacencias[cidadeAtual, saidaAtual] == 0)
+                                            {
+                                                // tenta a próxima
+                                                saidaAtual++;
+                                            }
+
+                                            else // se há saída
+                                            {
+                                                // se a saída já foi visitada
+                                                if (destinosDisponiveis[saidaAtual])
+                                                {
+                                                    // tenta a próxima
+                                                    saidaAtual++;
+                                                }
+
+                                                else // se a saída não foi visitada
+                                                {
+                                                    // o movimento é empilhado
+                                                    Movimento movimento = new Movimento(cidadeAtual, saidaAtual);
+                                                    movimentosNovoCaminho.Empilhar(movimento);
+
+                                                    // se a saída for o destino
+                                                    if (saidaAtual == codigoDestino)
+                                                    {
+                                                        achou = true; // achou recebe true
+                                                    }
+
+                                                    else // se a saída não for o destino
+                                                    {
+                                                        // marca que a cidade já foi passada
+                                                        destinosDisponiveis[cidadeAtual] = true;
+
+                                                        // a cidade atual recebe a saída
+                                                        cidadeAtual = saidaAtual;
+                                                        // a saída recebe zero
+                                                        saidaAtual = 0;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if (!achou && !movimentos.EstaVazia)
+                                    {
+                                        // desempilha o movimento anterior da pilha
+                                        Movimento movimentoAnterior = movimentosNovoCaminho.Desempilhar();
+
+                                        // a cidade atual recebe a cidade de origem do movimento anterior
+                                        cidadeAtual = movimentoAnterior.Origem;
+                                        // a saída atual recebe a próxima cidade relativa ao movimento anterior
+                                        saidaAtual = movimentoAnterior.Destino + 1;
+                                    }
+                                }
+
+                                if (achou)
+                                {
+                                    // conectar os movimentos anteriores aos novos movimentos para criar o novo caminho
+                                    var movimentosAnteriores = movimentos.DadosDaPilha();
+                                    var novosMovimentos = movimentosNovoCaminho.DadosDaPilha();
+
+                                    for (int j = 0; i < movimentosAnteriores.Count; j++)
+                                        caminho.Empilhar(movimentosAnteriores[j]);
+
+                                    for (int j = 0; i < novosMovimentos.Count; j++)
+                                        caminho.Empilhar(novosMovimentos[j]);
+
+                                    // adiciona o caminho a list de caminhos
+                                    caminhos.Add(caminho);
+                                }
+                            }
+                        }
                     }
-
-                    // adiciona o caminho a list de caminhos
-                    caminhos.Add(caminho);
-
-
                 }
 
                 // exibe cada caminho no data grid view
@@ -314,7 +408,6 @@ namespace apCaminhos
                     }
                 }
             }
-
             else // se não
             {
                 // exibe uma message box de erro
