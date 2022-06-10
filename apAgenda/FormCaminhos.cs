@@ -252,7 +252,7 @@ namespace apCaminhos
                     }
                 }
 
-               
+
 
                 // se um caminho foi encontrado
                 if (achou)
@@ -282,6 +282,9 @@ namespace apCaminhos
                                 destinosDisponiveis[saidaAtual] = true;
                             }
                         }
+
+                        for (int i = 0; i < passou.Length; i++)
+                            passou[i] = false;
 
 
                         for (int i = 0; i < destinosDisponiveis.Length; i++)
@@ -330,7 +333,7 @@ namespace apCaminhos
                                             else // se há saída
                                             {
                                                 // se a saída já foi visitada
-                                                if (destinosDisponiveis[saidaAtual])
+                                                if (passou[saidaAtual])
                                                 {
                                                     // tenta a próxima
                                                     saidaAtual++;
@@ -351,7 +354,7 @@ namespace apCaminhos
                                                     else // se a saída não for o destino
                                                     {
                                                         // marca que a cidade já foi passada
-                                                        destinosDisponiveis[cidadeAtual] = true;
+                                                        passou[cidadeAtual] = true;
 
                                                         // a cidade atual recebe a saída
                                                         cidadeAtual = saidaAtual;
