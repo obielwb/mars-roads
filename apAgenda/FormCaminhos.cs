@@ -172,7 +172,7 @@ namespace apCaminhos
                 }
 
                 // pilha vetor de movimentos
-                movimentos = new PilhaVetor<Movimento>(cidades.Tamanho);
+                movimentos = new PilhaVetor<Movimento>();
 
                 // variáveis para o registro da cidade e registro
                 int cidadeAtual = codigoOrigem, saidaAtual = 0;
@@ -261,11 +261,11 @@ namespace apCaminhos
                     while (!movimentos.EstaVazia)
                     {
                         ///////// inicia o processo de achar vários caminhos ////////
-                        // Pilha que armazena os destinos disponiveis para realizar a operação de backtracking da cidade atual
-                        bool[] destinosDisponiveis = new bool[cidades.Tamanho];
+                        // Pilha que armazena as origens disponiveis para realizar a operação de backtracking da cidade atual
+                        bool[] origensDisponiveis = new bool[cidades.Tamanho];
 
-                        for (int i = 0; i < destinosDisponiveis.Length; i++)
-                            destinosDisponiveis[i] = false; // inicializa todas as posições como false
+                        for (int i = 0; i < origensDisponiveis.Length; i++)
+                            origensDisponiveis[i] = false; // inicializa todas as posições como false
 
                         var movimentoDesempilhado = movimentos.Desempilhar();
 
@@ -279,28 +279,30 @@ namespace apCaminhos
                             if (adjacencias[cidadeAtual, saidaAtual] != 0)
                             {
                                 // armazena as saidas da cidade atual no vetor de destinos possíveis
-                                destinosDisponiveis[saidaAtual] = true;
+                                origensDisponiveis[cidadeAtual] = true; 
                             }
+
+                            saidaAtual++;
                         }
 
                         for (int i = 0; i < passou.Length; i++)
                             passou[i] = false;
 
 
-                        for (int i = 0; i < destinosDisponiveis.Length; i++)
+                        for (int i = 0; i < origensDisponiveis.Length; i++)
                         {
                             // Verifica se há uma conexão com outra cidade
-                            if (destinosDisponiveis[i])
+                            if (origensDisponiveis[i])
                             {
                                 // instancia uma pilha de movimentos relativa ao caminho
-                                PilhaVetor<Movimento> caminho = new PilhaVetor<Movimento>(movimentos.Tamanho);
+                                PilhaVetor<Movimento> caminho = new PilhaVetor<Movimento>();
 
                                 codigoOrigem = i;
                                 codigoDestino = int.Parse(destino.Codigo);
 
 
                                 // instancia uma nova pilha de movimentos para o caminho atual
-                                PilhaVetor<Movimento> movimentosNovoCaminho = new PilhaVetor<Movimento>(cidades.Tamanho);
+                                PilhaVetor<Movimento> movimentosNovoCaminho = new PilhaVetor<Movimento>();
 
                                 // variáveis para o registro da cidade e registro
                                 cidadeAtual = codigoOrigem;
@@ -384,10 +386,10 @@ namespace apCaminhos
                                     var movimentosAnteriores = movimentos.DadosDaPilha();
                                     var novosMovimentos = movimentosNovoCaminho.DadosDaPilha();
 
-                                    for (int j = 0; i < movimentosAnteriores.Count; j++)
+                                    for (int j = 0; j < movimentosAnteriores.Count; j++)
                                         caminho.Empilhar(movimentosAnteriores[j]);
 
-                                    for (int j = 0; i < novosMovimentos.Count; j++)
+                                    for (int j = 0; j < novosMovimentos.Count; j++)
                                         caminho.Empilhar(novosMovimentos[j]);
 
                                     // adiciona o caminho a list de caminhos
@@ -449,6 +451,11 @@ namespace apCaminhos
             }
 
             return cidade;
+        }
+
+        private void AdicionarLinhaNoDgv(DataGridView dgvParaExibicao)
+        {
+            // TODO: Lógica de adicionar uma nova linha no dgv
         }
     }
 }
