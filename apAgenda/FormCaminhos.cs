@@ -279,7 +279,7 @@ namespace apCaminhos
                             if (adjacencias[cidadeAtual, saidaAtual] != 0)
                             {
                                 // armazena as saidas da cidade atual no vetor de destinos possíveis
-                                origensDisponiveis[cidadeAtual] = true; 
+                                origensDisponiveis[saidaAtual] = true; 
                             }
 
                             saidaAtual++;
@@ -368,7 +368,7 @@ namespace apCaminhos
                                         }
                                     }
 
-                                    if (!achou && !movimentos.EstaVazia)
+                                    if (!achou && !movimentosNovoCaminho.EstaVazia)
                                     {
                                         // desempilha o movimento anterior da pilha
                                         Movimento movimentoAnterior = movimentosNovoCaminho.Desempilhar();
@@ -403,14 +403,21 @@ namespace apCaminhos
                 // exibe cada caminho no data grid view
                 for (int i = 0; i < caminhos.Count; i++)
                 {
+                    DataGridViewRow row = (DataGridViewRow)caminhosEncontradosDataGridView.Rows[0].Clone();
+
                     int celula = 0;
 
                     foreach (Movimento movimento in caminhos[i].DadosDaPilha())
                     {
-                        Cidade cidade = BuscarCidadePorCodigo(movimento.Origem);
+                        Cidade cidadeOrigem = BuscarCidadePorCodigo(movimento.Origem);
 
-                        caminhosEncontradosDataGridView.Rows[i].Cells[celula++].Value = cidade.Nome;
+                        row.Cells[celula++].Value = cidadeOrigem.Nome;
+
+                        Cidade cidadeDestino = BuscarCidadePorCodigo(movimento.Destino);
+                        row.Cells[celula++].Value = cidadeDestino.Nome;
                     }
+
+                    caminhosEncontradosDataGridView.Rows.Add(row);
                 }
             }
             else // se não
