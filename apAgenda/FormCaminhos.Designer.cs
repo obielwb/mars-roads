@@ -322,6 +322,7 @@
             this.caminhosEncontradosDataGridView.Name = "caminhosEncontradosDataGridView";
             this.caminhosEncontradosDataGridView.Size = new System.Drawing.Size(1323, 121);
             this.caminhosEncontradosDataGridView.TabIndex = 32;
+            this.caminhosEncontradosDataGridView.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.caminhosEncontradosDataGridView_RowHeaderMouseClick);
             // 
             // Column2
             // 
