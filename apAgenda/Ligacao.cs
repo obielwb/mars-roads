@@ -44,17 +44,8 @@ namespace apCaminhos
 
         public int CompareTo(Ligacao outro)
         {
-            // a soma de todos os atributos de um caminho pode ser usada como
-            // compare to
-            int somaThis = 
-                int.Parse(CodigoOrigem) + int.Parse(CodigoDestino) +
-                    Distancia + Custo + Tempo;
-
-            int somaOutro = 
-                int.Parse(outro.CodigoOrigem) + int.Parse(outro.CodigoDestino) +
-                    outro.Distancia + outro.Custo + outro.Tempo;
-
-            return somaThis.CompareTo(somaOutro);
+            // a comparação das ligações é feita a partir de seus códigos concatenados
+            return (CodigoOrigem + CodigoDestino).CompareTo((outro.CodigoOrigem + outro.CodigoDestino));
         }
 
         // método de leitura de arquivo

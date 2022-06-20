@@ -126,10 +126,10 @@ namespace apCaminhos
             }
         }
 
-        //public bool IniciarBusca()
-        //{
+        // public bool IniciarBusca()
+        // {
 
-        //}
+        // }
 
         private void acharCaminhosButton_Click(object sender, EventArgs e)
         {
@@ -251,9 +251,7 @@ namespace apCaminhos
                         saidaAtual = movimentoAnterior.Destino + 1;
                     }
                 }
-
-
-
+                
                 // se um caminho foi encontrado
                 if (achou)
                 {
@@ -444,19 +442,25 @@ namespace apCaminhos
             // enquanto a cidade ainda não foi encontrada
             while (!achou)
             {
+                // cidade recebe dado atual
                 cidade = cidades.DadoAtual();
 
+                // se o código da cidade for igual ao código procurado
                 if (int.Parse(cidade.Codigo) == codigo)
                 {
+                    // a cidade foi encontrada
                     achou = true;
                 }
 
+                // senão
                 else
                 {
+                    // avança a posição
                     cidades.AvancarPosicao();
                 }
             }
 
+            // retorna default ou a cidade
             return cidade;
         }
 
