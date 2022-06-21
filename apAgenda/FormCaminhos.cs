@@ -571,28 +571,32 @@ namespace apCaminhos
         {
             int celulas = caminhosEncontradosDataGridView.Rows[e.RowIndex].Cells.Count;
 
+
             PilhaVetor<Movimento> caminhoSelecionado = 
                 new PilhaVetor<Movimento>(celulas);
 
-            for (int i = 0; i < celulas;)
+            for (int i = 0; i < celulas - 1; i++)
             {
-                string cidadeOrigem = (string)caminhosEncontradosDataGridView.Rows[e.RowIndex].Cells[i++].Value;
-                string cidadeDestino = (string)caminhosEncontradosDataGridView.Rows[e.RowIndex].Cells[i++].Value;
+                string cidadeOrigem = (string)caminhosEncontradosDataGridView.Rows[e.RowIndex].Cells[i].Value;
+                string cidadeDestino = (string)caminhosEncontradosDataGridView.Rows[e.RowIndex].Cells[i + 1].Value;
 
                 int codigoOrigem = 0;
                 int codigoDestino = 0;
 
-                if (cidades.Existe(new Cidade("".PadLeft(3, '0'), cidadeOrigem, 0, 0), out _))
+                if (cidadeOrigem != null && cidadeDestino != null)
                 {
-                    codigoOrigem = int.Parse(cidades.DadoAtual().Codigo);
-                }
+                    if (cidades.Existe(new Cidade("".PadLeft(3, '0'), cidadeOrigem, 0, 0), out _))
+                    {
+                        codigoOrigem = int.Parse(cidades.DadoAtual().Codigo);
+                    }
 
-                if (cidades.Existe(new Cidade("".PadLeft(3, '0'), cidadeDestino, 0, 0), out _))
-                {
-                    codigoDestino = int.Parse(cidades.DadoAtual().Codigo);
-                }
+                    if (cidades.Existe(new Cidade("".PadLeft(3, '0'), cidadeDestino, 0, 0), out _))
+                    {
+                        codigoDestino = int.Parse(cidades.DadoAtual().Codigo);
+                    }
 
-                caminhoSelecionado.Empilhar(new Movimento(codigoOrigem, codigoDestino));
+                    caminhoSelecionado.Empilhar(new Movimento(codigoOrigem, codigoDestino));
+                }
             }
 
             caminho = caminhoSelecionado;
