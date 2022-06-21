@@ -569,7 +569,35 @@ namespace apCaminhos
 
         private void caminhosEncontradosDataGridView_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            int celulas = caminhosEncontradosDataGridView.Rows[e.RowIndex].Cells.Count;
 
+            PilhaVetor<Movimento> caminhoSelecionado = 
+                new PilhaVetor<Movimento>(celulas);
+
+            for (int i = 0; i < celulas;)
+            {
+                string cidadeOrigem = (string)caminhosEncontradosDataGridView.Rows[e.RowIndex].Cells[i++].Value;
+                string cidadeDestino = (string)caminhosEncontradosDataGridView.Rows[e.RowIndex].Cells[i++].Value;
+
+                int codigoOrigem = 0;
+                int codigoDestino = 0;
+
+                if (cidades.Existe(new Cidade("".PadLeft(3, '0'), cidadeOrigem, 0, 0), out _))
+                {
+                    codigoOrigem = int.Parse(cidades.DadoAtual().Codigo);
+                }
+
+                if (cidades.Existe(new Cidade("".PadLeft(3, '0'), cidadeDestino, 0, 0), out _))
+                {
+                    codigoDestino = int.Parse(cidades.DadoAtual().Codigo);
+                }
+
+                caminhoSelecionado.Empilhar(new Movimento(codigoOrigem, codigoDestino));
+            }
+
+            caminho = caminhoSelecionado;
+
+            mapaPictureBox.Refresh();
         }
     }
 }

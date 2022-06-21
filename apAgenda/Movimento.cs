@@ -22,8 +22,8 @@ namespace apCaminhos
 
         public int CompareTo(Movimento outro)
         {
-            // o que usar como critério?
-            return 0;
+            // a comparação dos movimentos é feita a partir de sua origem e seu destino concatenados
+            return (Origem.ToString("000") + Destino.ToString("000")).CompareTo(outro.Origem.ToString("000") + outro.Destino.ToString("000"));
         }
     }
 }
