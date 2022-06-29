@@ -11,6 +11,7 @@ namespace apCaminhos
         ListaDupla<Ligacao> ligacoes;
         Cidade origem;
         Cidade destino;
+        int[,] adjacencias;
         PilhaVetor<Movimento> movimentos;
         PilhaVetor<Movimento> caminho;
 
@@ -143,11 +144,6 @@ namespace apCaminhos
             }
         }
 
-        // public bool IniciarBusca()
-        // {
-
-        // }
-
         private void acharCaminhosButton_Click(object sender, EventArgs e)
         {
             // se a cidade de origem e a cidade de destino não forem null
@@ -168,18 +164,12 @@ namespace apCaminhos
                 else
                 {
                     // limpa o data grid view
-                    for (int i = 0; i < caminhosEncontradosDataGridView.Rows.Count; i++)
-                    {
-                        for (int j = 0; j < caminhosEncontradosDataGridView.Rows[i].Cells.Count; j++)
-                        {
-                            caminhosEncontradosDataGridView.Rows[i].Cells[j].Value = "";
-                        }
-                    }
+                    caminhosEncontradosDataGridView.Rows.Clear();
 
                     //////////////////////////////////   atributos   //////////////////////////////////
                     ///
                     // instancia uma matriz de adjacências com tamanho das cidades
-                    int[,] adjacencias = new int[cidades.Tamanho, cidades.Tamanho];
+                    adjacencias = new int[cidades.Tamanho, cidades.Tamanho];
 
                     ligacoes.PosicionarNoPrimeiro(); // posiciona o atual no primeiro
 
@@ -450,19 +440,19 @@ namespace apCaminhos
                             Cidade cidadeOrigem = BuscarCidadePorCodigo(movimento.Origem);
 
                             row.Cells[celula++].Value = cidadeOrigem.Nome;
-
-                            // não necessário
-                            /* Cidade cidadeDestino = BuscarCidadePorCodigo(movimento.Destino);
-
-                            row.Cells[celula++].Value = cidadeDestino.Nome; */
                         }
 
                         row.Cells[celula].Value = destino.Nome;
 
                         caminhosEncontradosDataGridView.Rows.Add(row);
+
+                        AcharMelhorCaminho(caminhos);
                     }
 
-                    AcharMelhorCaminho(caminhos);
+                    if (caminhosEncontradosDataGridView.CurrentCell != null)
+                    { 
+                        caminhosEncontradosDataGridView.CurrentCell.Selected = false;
+                    }
                 }
             }
 
@@ -480,57 +470,33 @@ namespace apCaminhos
 
         private Cidade BuscarCidadePorCodigo(int codigo)
         {
-            cidades.PosicionarNoPrimeiro(); // posiciona o atual no primeiro
+            // posiciona a cidade no relativo código
+            cidades.PosicionarEm(codigo);
 
-            // variável de controle da busca
-            bool achou = false;
-
-            Cidade cidade = default;
-
-            // enquanto a cidade ainda não foi encontrada
-            while (!achou)
-            {
-                // cidade recebe dado atual
-                cidade = cidades.DadoAtual();
-
-                // se o código da cidade for igual ao código procurado
-                if (int.Parse(cidade.Codigo) == codigo)
-                {
-                    // a cidade foi encontrada
-                    achou = true;
-                }
-
-                // senão
-                else
-                {
-                    // avança a posição
-                    cidades.AvancarPosicao();
-                }
-            }
+            // cidade recebe dado atual
+            Cidade cidade = cidades.DadoAtual();
 
             // retorna default ou a cidade
             return cidade;
         }
 
-        private void AdicionarLinhaNoDgv(DataGridView dgvParaExibicao)
-        {
-            // TODO: Lógica de adicionar uma nova linha no dgv
-        }
-
         private void AcharMelhorCaminho(List<PilhaVetor<Movimento>> caminhos)
         {
+            melhorCaminhoDataGridView.Rows.Clear();
+
             PilhaVetor<Movimento> menor = null;
-            int menorDistancia = 0;
-            int distancia = 0;
+            int menorDistancia = int.MaxValue;
 
             foreach (PilhaVetor<Movimento> caminho in caminhos)
             {
+                int distancia = 0;
+
                 foreach (Movimento movimento in caminho.DadosDaPilha())
                 {
                     if (ligacoes.Existe(
                         new Ligacao(
-                            movimento.Origem.ToString("000"),
-                            movimento.Destino.ToString("000"),
+                            movimento.Origem.ToString(),
+                            movimento.Destino.ToString(),
                                 0, 0, 0), out _))
                     {
                         Ligacao ligacao = ligacoes.DadoAtual();
@@ -547,6 +513,7 @@ namespace apCaminhos
                 }
             }
 
+            melhorCaminhoLabel.Text = $"Melhor caminho ({menorDistancia} km)";
 
             if (menor != null)
             {
@@ -599,9 +566,22 @@ namespace apCaminhos
                 }
             }
 
+            int distancia = 0;
+
+            foreach (Movimento movimento in caminhoSelecionado.DadosDaPilha())
+            {
+                distancia += adjacencias[movimento.Origem, movimento.Destino];
+            }
+
             caminho = caminhoSelecionado;
+            kmCaminhoSelecionadoLabel.Text = $"Km do caminho selecionado: ({distancia} km)";
 
             mapaPictureBox.Refresh();
+        }
+
+        private void sairToolStripButton_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }

@@ -45,7 +45,7 @@ namespace apCaminhos
         public int CompareTo(Ligacao outro)
         {
             // a comparação das ligações é feita a partir de seus códigos concatenados
-            return (CodigoOrigem + CodigoDestino).CompareTo((outro.CodigoOrigem + outro.CodigoDestino));
+            return (CodigoOrigem + CodigoDestino).CompareTo(outro.CodigoOrigem + outro.CodigoDestino);
         }
 
         // método de leitura de arquivo
@@ -55,8 +55,8 @@ namespace apCaminhos
             {
                 string linha = arquivo.ReadLine();
 
-                CodigoOrigem = linha.Substring(iniCodigoOrigem, tamCodigo);
-                CodigoDestino = linha.Substring(iniCodigoDestino, tamCodigo);
+                CodigoOrigem = int.Parse(linha.Substring(iniCodigoOrigem, tamCodigo)).ToString("000");
+                CodigoDestino = int.Parse(linha.Substring(iniCodigoDestino, tamCodigo)).ToString("000");
                 Distancia = int.Parse(linha.Substring(iniDistancia, tamDistancia));
                 Tempo = int.Parse(linha.Substring(iniTempo, tamTempo));
                 Custo = int.Parse(linha.Substring(iniCusto));

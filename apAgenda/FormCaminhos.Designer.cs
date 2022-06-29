@@ -262,6 +262,7 @@
             this.sairToolStripButton.Size = new System.Drawing.Size(30, 39);
             this.sairToolStripButton.Text = "Sair";
             this.sairToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.sairToolStripButton.Click += new System.EventHandler(this.sairToolStripButton_Click);
             // 
             // cidadesOpenFileDialog
             // 
