@@ -158,7 +158,7 @@ namespace apCaminhos
                     // exibe uma message box de erro
                     MessageBox.Show(
                         "Selecione uma cidade de origem e uma cidade de destino distintas!",
-                        "Erro",
+                        "Cidade",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error
                     );
@@ -166,8 +166,13 @@ namespace apCaminhos
 
                 else
                 {
-                    // limpa o data grid view
+                    // limpa os data grid view
                     caminhosEncontradosDataGridView.Rows.Clear();
+                    melhorCaminhoDataGridView.Rows.Clear();
+
+                    // reseta as labels
+                    melhorCaminhoLabel.Text = $"Melhor caminho (yyyyy km)";
+                    kmCaminhoSelecionadoLabel.Text = $"Km do caminho selecionado: (xxxxx km)";
 
                     //////////////////////////////////   atributos   //////////////////////////////////
                     ///
@@ -437,32 +442,93 @@ namespace apCaminhos
                                 }
                             }
                         }
-                    }
 
-                    // exibe cada caminho no data grid view
-                    for (int i = 0; i < caminhos.Count; i++)
-                    {
-                        DataGridViewRow row = (DataGridViewRow)caminhosEncontradosDataGridView.Rows[0].Clone();
+                        PilhaVetor<Movimento> menor = null;
+                        int menorDistancia = int.MaxValue;
 
-                        int celula = 0;
-
-                        foreach (Movimento movimento in caminhos[i].DadosDaPilha())
+                        // exibe cada caminho no data grid view e acha o melhor caminho
+                        foreach (PilhaVetor<Movimento> caminho in caminhos)
                         {
-                            Cidade cidadeOrigem = BuscarCidadePorCodigo(movimento.Origem);
+                            DataGridViewRow row = (DataGridViewRow)caminhosEncontradosDataGridView.Rows[0].Clone();
 
-                            row.Cells[celula++].Value = cidadeOrigem.Nome;
+                            int celula = 0;
+                            int distancia = 0;
+
+                            foreach (Movimento movimento in caminho.DadosDaPilha())
+                            {
+                                Cidade cidadeOrigem = BuscarCidadePorCodigo(movimento.Origem);
+
+                                row.Cells[celula++].Value = cidadeOrigem.Nome;
+
+                                if (ligacoes.Existe(
+                                    new Ligacao(
+                                        movimento.Origem.ToString(),
+                                            movimento.Destino.ToString(),
+                                                0, 0, 0), out _))
+                                {
+                                    Ligacao ligacao = ligacoes.DadoAtual();
+
+                                    distancia += ligacao.Distancia;
+                                }
+                            }
+
+                            row.Cells[celula].Value = destino.Nome;
+
+                            if (distancia <= menorDistancia)
+                            {
+                                menorDistancia = distancia;
+
+                                menor = caminho;
+                            }
+
+                            caminhosEncontradosDataGridView.Rows.Add(row);
                         }
 
-                        row.Cells[celula].Value = destino.Nome;
+                        if (menor != null)
+                        {
+                            melhorCaminhoDataGridView.Rows.Clear();
 
-                        caminhosEncontradosDataGridView.Rows.Add(row);
+                            melhorCaminhoLabel.Text = $"Melhor caminho ({menorDistancia} km)";
 
-                        AcharMelhorCaminho(caminhos);
+                            if (menor != null)
+                            {
+                                int linha = 0;
+
+                                foreach (Movimento movimento in menor.DadosDaPilha())
+                                {
+                                    DataGridViewRow row = (DataGridViewRow)melhorCaminhoDataGridView.Rows[0].Clone();
+                                    linha++;
+
+                                    Cidade cidade = BuscarCidadePorCodigo(movimento.Origem);
+
+                                    row.Cells[0].Value = cidade.Nome;
+
+                                    melhorCaminhoDataGridView.Rows.Add(row);
+                                }
+
+                                melhorCaminhoDataGridView.Rows[menor.Tamanho].Cells[0].Value = destino.Nome;
+
+                                caminho = menor;
+
+                                mapaPictureBox.Refresh();
+                            }
+                        }
+
+                        if (caminhosEncontradosDataGridView.CurrentCell != null)
+                        {
+                            caminhosEncontradosDataGridView.CurrentCell.Selected = false;
+                        }
                     }
 
-                    if (caminhosEncontradosDataGridView.CurrentCell != null)
+                    else
                     {
-                        caminhosEncontradosDataGridView.CurrentCell.Selected = false;
+                        // exibe uma message box de erro
+                        MessageBox.Show(
+                            "Caminho não encontrado!",
+                            "Caminho",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
                     }
                 }
             }
@@ -472,7 +538,7 @@ namespace apCaminhos
                 // exibe uma message box de erro
                 MessageBox.Show(
                     "Selecione uma cidade de origem e uma cidade de destino!",
-                    "Erro",
+                    "Cidade",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
@@ -491,68 +557,19 @@ namespace apCaminhos
             return cidade;
         }
 
-        private void AcharMelhorCaminho(List<PilhaVetor<Movimento>> caminhos)
-        {
-            melhorCaminhoDataGridView.Rows.Clear();
-
-            PilhaVetor<Movimento> menor = null;
-            int menorDistancia = int.MaxValue;
-
-            foreach (PilhaVetor<Movimento> caminho in caminhos)
-            {
-                int distancia = 0;
-
-                foreach (Movimento movimento in caminho.DadosDaPilha())
-                {
-                    if (ligacoes.Existe(
-                        new Ligacao(
-                            movimento.Origem.ToString(),
-                            movimento.Destino.ToString(),
-                                0, 0, 0), out _))
-                    {
-                        Ligacao ligacao = ligacoes.DadoAtual();
-
-                        distancia += ligacao.Distancia;
-                    }
-                }
-
-                if (distancia <= menorDistancia)
-                {
-                    menorDistancia = distancia;
-
-                    menor = caminho;
-                }
-            }
-
-            melhorCaminhoLabel.Text = $"Melhor caminho ({menorDistancia} km)";
-
-            if (menor != null)
-            {
-                foreach (Movimento movimento in menor.DadosDaPilha())
-                {
-                    DataGridViewRow row = (DataGridViewRow)melhorCaminhoDataGridView.Rows[0].Clone();
-
-                    Cidade cidade = BuscarCidadePorCodigo(movimento.Origem);
-
-                    row.Cells[0].Value = cidade.Nome;
-
-                    melhorCaminhoDataGridView.Rows.Add(row);
-                }
-
-                caminho = menor;
-
-                mapaPictureBox.Refresh();
-            }
-        }
-
+        // evento click no cabeçalho da linha
         private void caminhosEncontradosDataGridView_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            // contagem das células da linha clicada
             int celulas = caminhosEncontradosDataGridView.Rows[e.RowIndex].Cells.Count;
 
+            // caminho selecionado pelo usuário
             PilhaVetor<Movimento> caminhoSelecionado = new PilhaVetor<Movimento>(celulas);
 
+            // for que percorre as células
             for (int i = 0; i < celulas - 1; i++)
             {
+                // obtendo os nomes das cidades de origem e de destino
                 string cidadeOrigem = (string)caminhosEncontradosDataGridView.Rows[e.RowIndex].Cells[i].Value;
                 string cidadeDestino = (string)caminhosEncontradosDataGridView.Rows[e.RowIndex].Cells[i + 1].Value;
 
