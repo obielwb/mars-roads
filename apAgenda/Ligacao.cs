@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Gabriel Willian Bartmanovicz - 21234
+// João Pedro Ferreira Barbosa - 21687
+
+using System;
 using System.IO;
 
 namespace apCaminhos

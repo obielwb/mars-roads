@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Gabriel Willian Bartmanovicz - 21234
+// João Pedro Ferreira Barbosa - 21687
+
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -210,7 +213,7 @@ namespace apCaminhos
                     // variáveis lógicas para o controle da busca
                     bool achou = false, fim = false;
 
-                    //////////////////////////////////   busca   //////////////////////////////////
+                    //////////////////////////////////   busca de um caminho   //////////////////////////////////
                     ///
                     // enquanto o caminho não foi encontrado e há saída
                     while (!achou && !fim)
@@ -282,26 +285,30 @@ namespace apCaminhos
                         }
                     }
 
+                    //////////////////////////////////   busca de vários caminhos   //////////////////////////////////
+                    ///
                     // se um caminho foi encontrado
                     if (achou)
                     {
                         // enquanto a pilha de movimentos não está vazia
                         while (!movimentos.EstaVazia)
                         {
-                            ///////// inicia o processo de achar vários caminhos ////////
                             // Pilha que armazena as origens disponiveis para realizar a operação de backtracking da cidade atual
                             bool[] origensDisponiveis = new bool[cidades.Tamanho];
 
                             for (int i = 0; i < origensDisponiveis.Length; i++)
+                            {
                                 origensDisponiveis[i] = false; // inicializa todas as posições como false
+                            }
 
-                            var movimentoDesempilhado = movimentos.Desempilhar();
+                            Movimento movimentoDesempilhado = movimentos.Desempilhar();
 
                             Cidade cidadeOrigemDoMovimento = BuscarCidadePorCodigo(movimentoDesempilhado.Origem);
 
                             // percorre as saidas possíveis da cidade de origem
                             saidaAtual = 0;
                             cidadeAtual = int.Parse(cidadeOrigemDoMovimento.Codigo);
+
                             while (saidaAtual < cidades.Tamanho)
                             {
                                 if (adjacencias[cidadeAtual, saidaAtual] != 0)
@@ -314,8 +321,9 @@ namespace apCaminhos
                             }
 
                             for (int i = 0; i < passou.Length; i++)
+                            {
                                 passou[i] = false;
-
+                            }
 
                             for (int i = 0; i < origensDisponiveis.Length; i++)
                             {
@@ -327,7 +335,6 @@ namespace apCaminhos
 
                                     codigoOrigem = i;
                                     codigoDestino = int.Parse(destino.Codigo);
-
 
                                     // instancia uma nova pilha de movimentos para o caminho atual
                                     PilhaVetor<Movimento> movimentosNovoCaminho = new PilhaVetor<Movimento>();
@@ -411,14 +418,18 @@ namespace apCaminhos
                                     if (achou)
                                     {
                                         // conectar os movimentos anteriores aos novos movimentos para criar o novo caminho
-                                        var movimentosAnteriores = movimentos.DadosDaPilha();
-                                        var novosMovimentos = movimentosNovoCaminho.DadosDaPilha();
+                                        List<Movimento> movimentosAnteriores = movimentos.DadosDaPilha();
+                                        List<Movimento> novosMovimentos = movimentosNovoCaminho.DadosDaPilha();
 
                                         for (int j = 0; j < movimentosAnteriores.Count; j++)
+                                        {
                                             caminho.Empilhar(movimentosAnteriores[j]);
+                                        }
 
                                         for (int j = 0; j < novosMovimentos.Count; j++)
+                                        {
                                             caminho.Empilhar(novosMovimentos[j]);
+                                        }
 
                                         // adiciona o caminho a list de caminhos
                                         caminhos.Add(caminho);
@@ -450,7 +461,7 @@ namespace apCaminhos
                     }
 
                     if (caminhosEncontradosDataGridView.CurrentCell != null)
-                    { 
+                    {
                         caminhosEncontradosDataGridView.CurrentCell.Selected = false;
                     }
                 }
@@ -538,9 +549,7 @@ namespace apCaminhos
         {
             int celulas = caminhosEncontradosDataGridView.Rows[e.RowIndex].Cells.Count;
 
-
-            PilhaVetor<Movimento> caminhoSelecionado = 
-                new PilhaVetor<Movimento>(celulas);
+            PilhaVetor<Movimento> caminhoSelecionado = new PilhaVetor<Movimento>(celulas);
 
             for (int i = 0; i < celulas - 1; i++)
             {
